@@ -1,14 +1,16 @@
-import pool from './db.js'; // Import the pool from db.js
+import pool from './db.js';
 
 (async () => {
   try {
-    // Perform a simple query to check the connection
-    const res = await pool.query('SELECT NOW()');
-    console.log('Connection successful! Server time:', res.rows[0].now);
+    const res1 = await pool.query('SELECT NOW()');
+    const res2 = await pool.query('SELECT * FROM users');
+
+    console.log('Connection successful!');
+    console.log('Server time:', res1.rows[0].now);
+    console.log('Users:', res2.rows);
   } catch (err) {
     console.error('Error connecting to the database:', err);
   } finally {
-    // Close the pool to avoid hanging connections
     await pool.end();
   }
 })();

@@ -3,6 +3,7 @@ import { auth, firestore } from "../firebase/firebase";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import useShowToast from "./useShowToast";
 import useAuthStore from "../store/authStore";
+//import pool from '../postgres/db.js'; 
 
 const useSignUpWithEmailAndPassword = () => {
 	const [createUserWithEmailAndPassword, , loading, error] = useCreateUserWithEmailAndPassword(auth);
@@ -36,6 +37,7 @@ const useSignUpWithEmailAndPassword = () => {
 					uid: newUser.user.uid,
 					email: inputs.email,
 					username: inputs.username,
+					password: inputs.password,
 					fullName: inputs.fullName,
 					bio: "",
 					profilePicURL: "",
@@ -45,8 +47,24 @@ const useSignUpWithEmailAndPassword = () => {
 					createdAt: Date.now(),
 				};
 				await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
+
+				// Send user data to PostgreSQL through backend
+				const response = await fetch('http://localhost:5000/api/signup', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(userDoc),
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to save user data to PostgreSQL');
+				}
+
+				// Remove password before storing in local storage
+				const { password, ...userDocWithoutPassword } = userDoc;
 				localStorage.setItem("user-info", JSON.stringify(userDoc));
-				loginUser(userDoc);
+				loginUser(userDocWithoutPassword);
 			}
 		} catch (error) {
 			showToast("Error", error.message, "error");

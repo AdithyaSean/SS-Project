@@ -1,8 +1,8 @@
 import request from 'supertest';
 import express from 'express';
 import bcrypt from 'bcrypt';
-import pool from '../db.js';
-import signupRoute from '../routes/useSignUpWithEmailAndPassword.js';
+import pool from './db.js';
+import signupRoute from './routes/useSignUpWithEmailAndPassword.js';
 
 const app = express();
 app.use(express.json());

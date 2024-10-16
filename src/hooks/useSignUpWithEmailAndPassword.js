@@ -3,6 +3,7 @@ import { auth, firestore } from "../firebase/firebase";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import useShowToast from "./useShowToast";
 import useAuthStore from "../store/authStore";
+import pool from "../db"; // Import PostgreSQL pool
 
 const useSignUpWithEmailAndPassword = () => {
     const [createUserWithEmailAndPassword, , loading, error] = useCreateUserWithEmailAndPassword(auth);
@@ -47,6 +48,30 @@ const useSignUpWithEmailAndPassword = () => {
                 await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
                 localStorage.setItem("user-info", JSON.stringify(userDoc));
                 loginUser(userDoc);
+
+                // Insert user data into PostgreSQL
+                const client = await pool.connect();
+                try {
+                    const queryText = `
+                        INSERT INTO users(uid, email, username, fullName, bio, profilePicURL, followers, following, posts, createdAt)
+                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    `;
+                    const values = [
+                        userDoc.uid,
+                        userDoc.email,
+                        userDoc.username,
+                        userDoc.fullName,
+                        userDoc.bio,
+                        userDoc.profilePicURL,
+                        JSON.stringify(userDoc.followers),
+                        JSON.stringify(userDoc.following),
+                        JSON.stringify(userDoc.posts),
+                        userDoc.createdAt,
+                    ];
+                    await client.query(queryText, values);
+                } finally {
+                    client.release();
+                }
             }
         } catch (error) {
             showToast("Error", error.message, "error");

@@ -54,7 +54,7 @@ const useSignUpWithEmailAndPassword = () => {
 				await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
 
 				// Send user data to PostgreSQL through backend
-				const response = await fetch('http://localhost:5000/api/signup', {
+				const response = await fetch('http://localhost:5033/api/signup', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',

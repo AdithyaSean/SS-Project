@@ -16,23 +16,49 @@ app.post('/api/signup', async (req, res) => {
     const { uid, email, username, fullName, bio, profilePicURL, followers, following, posts, createdAt, password } = req.body;
 
     try {
-        // Check if password is provided
-        if (!password) {
-            return res.status(400).json({ error: 'Password is required' });
-        }
-        // Hash the password before saving it to PostgreSQL
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // The password is already hashed by the frontend, so no need to hash it again
         // Convert createdAt from Unix timestamp (milliseconds) to a PostgreSQL-compatible date
         const createdAtDate = new Date(createdAt).toISOString();
 
         const result = await pool.query(
             'INSERT INTO users (uid, email, username, password, full_name, bio, profile_pic_url, followers, following, posts, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
-            [uid, email, username, hashedPassword, fullName, bio, profilePicURL, followers, following, posts, createdAtDate]
+            [uid, email, username, password, fullName, bio, profilePicURL, followers, following, posts, createdAtDate]
         );
         res.status(201).json({ message: 'User registered successfully', result });
     } catch (error) {
         console.error('Error saving user to PostgreSQL:', error);
         res.status(500).json({ error: 'Database error', details: error.message });
+    }
+});
+
+// New endpoint to handle user login
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Retrieve user from database
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        const user = result.rows[0];
+
+        // Compare provided password with stored hash
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        // If password is valid, send back user data (excluding password)
+        const { password: _, ...userWithoutPassword } = user;
+        res.json(userWithoutPassword);
+
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Server error', details: error.message });
     }
 });
 

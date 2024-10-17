@@ -3,6 +3,7 @@ import pool from './db.js'; // Adjust the path to your db.js file
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Import the cors package
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 const PORT = process.env.PORT || 5033;

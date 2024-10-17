@@ -26,7 +26,7 @@ signupRouter.post('/signup', async (req, res) => {
         // Insert the user into PostgreSQL
         const insertUserQuery = `
             INSERT INTO users (uid, email, username, full_name, password)
-            VALUES ($1, $2, $3, $4) RETURNING *
+            VALUES ($1, $2, $3, $4, $5) RETURNING *
         `;
         const insertValues = [email, username, fullName, hashedPassword];
         const result = await pool.query(insertUserQuery, insertValues);

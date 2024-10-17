@@ -2,8 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import signupRoute from './routes/useSignUpWithEmailAndPassword.js';
-import loginRoute from './routes/useLogin.js';
+import signupRouter from './routes/signUp.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -16,8 +15,7 @@ app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json());
 
 // routes
-app.use('/api/signup', signupRoute);
-app.use('/api/login', loginRoute);
+app.use('/api', signupRouter);
 
 // Start the server
 app.listen(PORT, () => {

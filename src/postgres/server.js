@@ -3,7 +3,6 @@ import pool from './db.js'; // Adjust the path to your db.js file
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Import the cors package
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 const app = express();
 const PORT = process.env.PORT || 5033;
@@ -35,36 +34,21 @@ app.post('/api/signup', async (req, res) => {
 // New endpoint to handle user login
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-
     try {
         // Retrieve user from database
         const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-
         if (result.rows.length === 0) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
-
         const user = result.rows[0];
-
         // Compare provided password with stored hash
         const isPasswordValid = await bcrypt.compare(password, user.password);
-
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
-
-         // If password is valid, generate a JWT token
-         const token = jwt.sign(
-            { uid: user.uid, email: user.email, username: user.username }, 
-            process.env.JWT_SECRET, // Ensure you have a secret key set in your environment variables
-            { expiresIn: '1h' }
-        );
-
-
         // If password is valid, send back user data (excluding password)
         const { password: _, ...userWithoutPassword } = user;
-        res.json({ user: userWithoutPassword, token });
-
+        res.json(userWithoutPassword);
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Server error', details: error.message });

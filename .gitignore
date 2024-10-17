@@ -28,4 +28,4 @@ dist-ssr
 .firebaserc
 firebase.json
 *.rules
-firestore.indexes.json
+firestore.indexes.jsonpackage-lock.json

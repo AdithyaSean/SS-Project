@@ -31,3 +31,4 @@ firebase.json
 *.rules
 package-lock.json
 firestore.indexes.json
+functions

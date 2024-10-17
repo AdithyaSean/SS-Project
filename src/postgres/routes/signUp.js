@@ -7,7 +7,7 @@ const signupRouter = express.Router();
 signupRouter.post('/signup', async (req, res) => {
     const { uid, email, username, fullName, password } = req.body;
 
-    if (!email || !username || !fullName || !password) {
+    if (!uid || !email || !username || !fullName || !password) {
         return res.status(400).json({ error: 'Please fill all the fields' });
     }
 

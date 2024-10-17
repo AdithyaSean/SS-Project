@@ -5,7 +5,7 @@ import pool from '../db.js';
 const signupRouter = express.Router();
 
 signupRouter.post('/signup', async (req, res) => {
-    const { email, username, fullName, password } = req.body;
+    const { uid, email, username, fullName, password } = req.body;
 
     if (!email || !username || !fullName || !password) {
         return res.status(400).json({ error: 'Please fill all the fields' });

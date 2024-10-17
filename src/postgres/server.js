@@ -8,7 +8,7 @@ import signupRouter from './routes/signUp.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5033;
+const PORT = process.env.PORT;
 
 // Middleware
 app.use(cors()); // Enable CORS for all routes

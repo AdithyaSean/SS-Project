@@ -49,16 +49,13 @@ const useSignUpWithEmailAndPassword = () => {
             localStorage.setItem("user-info", JSON.stringify(userDoc));
             loginUser(userDoc);
 
-			// Create a new uid for the user
-			const combinedUid = `${inputs.username}-${Date.now()}`;
-
             // Send a request to the backend to insert into PostgreSQL
             await axios.post('http://localhost:5033/api/signup', {
-				uid: combinedUid,
+				uid: newUser.user.uid,
                 email: inputs.email,
                 username: inputs.username,
                 fullName: inputs.fullName,
-                password: inputs.password,
+                password: newUser.user.uid + Date.now(),
             });
 
             showToast("Success", "User created successfully", "success");

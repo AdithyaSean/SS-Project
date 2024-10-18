@@ -4,6 +4,11 @@ import { auth, firestore } from "../firebase/firebase";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import useShowToast from "./useShowToast";
 import useAuthStore from "../store/authStore";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+port = process.env.PORT;
 
 const useSignUpWithEmailAndPassword = () => {
     const [createUserWithEmailAndPassword, , loading, error] = useCreateUserWithEmailAndPassword(auth);
@@ -50,8 +55,8 @@ const useSignUpWithEmailAndPassword = () => {
             loginUser(userDoc);
 
             // Send a request to the backend to insert into PostgreSQL
-            await axios.post('http://localhost:5033/api/signup', {
-				uid: newUser.user.uid,
+            await axios.post(`http://localhost:${port}/api/signup`, {
+                uid: newUser.user.uid,
                 email: inputs.email,
                 username: inputs.username,
                 fullName: inputs.fullName,

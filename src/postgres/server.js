@@ -7,17 +7,20 @@ import fs from 'fs';
 import path from 'path';
 import { format } from 'date-fns';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import session from 'express-session';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5033;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Use an environment variable in production
 
-
+// For handling ES modules, we need to get __dirname manually
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-
 
 // Custom logging middleware
 const logUserBehavior = (req, res, next) => {
@@ -32,19 +35,30 @@ app.use(cors());
 app.use(logUserBehavior);
 app.use(bodyParser.json());
 
+// Session middleware
+app.use(session({
+    secret: JWT_SECRET, // Using the same secret for simplicity, ideally use a separate secret
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set secure: true if using HTTPS
+}));
+
+// Middleware to log session data
+app.use((req, res, next) => {
+    console.log('Session data:', req.session);
+    next();
+});
+
 // Endpoint to register a user
 app.post('/api/signup', async (req, res) => {
     const { uid, email, username, fullName, bio, profilePicURL, followers, following, posts, createdAt, password } = req.body;
 
     try {
-        // Validate inputs here (e.g., check if email/username already exists)
-        
-        const hashedPassword = await bcrypt.hash(password, 10); // Hashing password
         const createdAtDate = new Date(createdAt).toISOString();
 
         const result = await pool.query(
             'INSERT INTO users (uid, email, username, password, full_name, bio, profile_pic_url, followers, following, posts, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
-            [uid, email, username, hashedPassword, fullName, bio, profilePicURL, followers, following, posts, createdAtDate]
+            [uid, email, username, password, fullName, bio, profilePicURL, followers, following, posts, createdAtDate]
         );
 
         // Log successful signup
@@ -52,9 +66,14 @@ app.post('/api/signup', async (req, res) => {
         const signupLogEntry = `${signupTimestamp} - New user signed up: ${email} (${username})\n`;
         accessLogStream.write(signupLogEntry);
 
+        req.session.userId = uid; // Set user ID in session
+        req.session.username = username; // Store username in session
+
+        // Log session data after signup
+        console.log('Session data after signup:', req.session);
+
         res.status(201).json({ message: 'User registered successfully', result });
     } catch (error) {
-        // Log failed signup attempt
         const failedSignupTimestamp = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
         const failedSignupLogEntry = `${failedSignupTimestamp} - Failed signup attempt: ${email} (${username}) - Error: ${error.message}\n`;
         accessLogStream.write(failedSignupLogEntry);
@@ -89,6 +108,13 @@ app.post('/api/login', async (req, res) => {
         const loginTimestamp = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
         const loginLogEntry = `${loginTimestamp} - User logged in: ${email}\n`;
         accessLogStream.write(loginLogEntry);
+
+        req.session.userId = user.uid; // Store user ID in session
+        req.session.email = email; // Store email in session
+        
+
+        // Log session data after login
+        console.log('Session data after login:', req.session);
 
         const { password: _, ...userWithoutPassword } = user;
         res.json({

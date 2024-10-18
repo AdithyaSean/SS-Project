@@ -2,6 +2,7 @@ import { Alert, AlertIcon, Button, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import useLogin from "../../hooks/useLogin";
 import ReCAPTCHA from "react-google-recaptcha";
+import DOMPurify from "dompurify";
 
 const Login = () => {
     const [inputs, setInputs] = useState({
@@ -23,6 +24,14 @@ const Login = () => {
         }
     };
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setInputs((prevInputs) => ({
+            ...prevInputs,
+            [name]: DOMPurify.sanitize(value),
+        }));
+    };
+
     return (
         <>
             <Input
@@ -30,16 +39,18 @@ const Login = () => {
                 fontSize={14}
                 type='email'
                 size={"sm"}
+                name="email"
                 value={inputs.email}
-                onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+                onChange={handleInputChange}
             />
             <Input
                 placeholder='Password'
                 fontSize={14}
                 size={"sm"}
                 type='password'
+                name="password"
                 value={inputs.password}
-                onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
+                onChange={handleInputChange}
             />
             <ReCAPTCHA
                 sitekey="6LfE-icqAAAAAK86ptEg_5_yHv-yaa5TS1FhknLj"

@@ -54,14 +54,14 @@ const useSignUpWithEmailAndPassword = () => {
 				await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
 
 				// Send user data to PostgreSQL through backend
-				const response = await fetch('http://localhost:5000/api/signup', {
+				const response = await fetch('http://localhost:5033/api/signup', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(userDoc),
 				});
-
+				showToast("Success", "User Register successfully", "success");
 				if (!response.ok) {
 					throw new Error('Failed to save user data to PostgreSQL');
 				}

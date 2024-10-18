@@ -42,7 +42,6 @@ const useLogin = () => {
 				localStorage.setItem("user-info", JSON.stringify(userDocWithoutPassword));
 				loginUser(userDocWithoutPassword);
 				showToast("Success", "Logged in successfully", "success");
-				return;
 			}else {
 				console.log("PostgreSQL authentication failed. Falling back to Firebase...");
 			}

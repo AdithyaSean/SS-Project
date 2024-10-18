@@ -61,7 +61,7 @@ const useSignUpWithEmailAndPassword = () => {
 					},
 					body: JSON.stringify(userDoc),
 				});
-
+				showToast("Success", "User Register successfully", "success");
 				if (!response.ok) {
 					throw new Error('Failed to save user data to PostgreSQL');
 				}

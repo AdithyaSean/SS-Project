@@ -4,6 +4,11 @@ import useShowToast from "./useShowToast";
 import { auth, firestore } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import useAuthStore from "../store/authStore";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const port = process.env.PORT;
 
 const useLogin = () => {
     const showToast = useShowToast();
@@ -24,7 +29,7 @@ const useLogin = () => {
                 loginUser(docSnap.data());
 
                 // Fetch user data from PostgreSQL
-                const response = await axios.post('http://localhost:5033/api/login', {
+                const response = await axios.post(`http://localhost:${port}/api/login`, {
                     uid: userCred.user.uid,
                 });
 

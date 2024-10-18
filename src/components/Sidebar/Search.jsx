@@ -27,7 +27,11 @@ const Search = () => {
 
     const handleSearchUser = (e) => {
         e.preventDefault();
-        const sanitizedInput = DOMPurify.sanitize(searchRef.current.value);
+        let input = searchRef.current.value;
+        // Remove any script tags
+        input = input.replace(/<script[^>]*>([\S\s]*?)<\/script>/gim, "");
+        input = input.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gim, "");
+        const sanitizedInput = DOMPurify.sanitize(input);
         getUserProfile(sanitizedInput);
     };
 

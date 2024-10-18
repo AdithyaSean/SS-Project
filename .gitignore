@@ -24,7 +24,7 @@ dist-ssr
 *.sln
 *.sw?
 
-#firebase directories and files
+# Firebase directories and files
 .env
 .firebase
 .firebaserc
@@ -33,3 +33,6 @@ firebase.json
 package-lock.json
 firestore.indexes.json
 functions
+
+# Github directories and files
+.github

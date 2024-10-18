@@ -7,14 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
 
 # Local environment files
 *.local
 .env
+node_modules
+dist
+dist-ssr
+*.local
 
 # Editor directories and files
 .vscode/*
@@ -27,6 +27,7 @@ dist-ssr
 *.sln
 *.sw?
 
+# Firebase files
 package-lock.json
 .env
 .firebase
@@ -35,3 +36,6 @@ firebase.json
 firebase.indexes.json
 firebase.rules
 storage.json
+
+# github files
+.github

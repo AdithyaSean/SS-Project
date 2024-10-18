@@ -24,10 +24,10 @@ const useLogin = () => {
 			});
 
 			if (response.ok) {
-				const userData = await response.json();
+				//const userData = await response.json();
 				console.log("User authenticated successfully with PostgreSQL");
 				// Ensure all necessary fields are present
-				const userDocWithoutPassword = {
+				/*const userDocWithoutPassword = {
 					uid: userData.uid,
 					email: userData.email,
 					username: userData.username,
@@ -40,7 +40,7 @@ const useLogin = () => {
 					createdAt: userData.created_at,
 				};
 				localStorage.setItem("user-info", JSON.stringify(userDocWithoutPassword));
-				loginUser(userDocWithoutPassword);
+				loginUser(userDocWithoutPassword);*/
 				showToast("Success", "Logged in successfully", "success");
 			}else {
 				console.log("PostgreSQL authentication failed. Falling back to Firebase...");

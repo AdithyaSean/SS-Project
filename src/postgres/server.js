@@ -14,8 +14,8 @@ import session from 'express-session';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5033;
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Use an environment variable in production
+const PORT = process.env.PORT;
+const JWT_SECRET = process.env.JWT_SECRET; // Use an environment variable in production
 
 // For handling ES modules, we need to get __dirname manually
 const __filename = fileURLToPath(import.meta.url);
@@ -51,14 +51,14 @@ app.use((req, res, next) => {
 
 // Endpoint to register a user
 app.post('/api/signup', async (req, res) => {
-    const { uid, email, username, fullName, bio, profilePicURL, followers, following, posts, createdAt, password } = req.body;
+    const { uid, email, username, fullName, createdAt, password } = req.body;
 
     try {
         const createdAtDate = new Date(createdAt).toISOString();
 
         const result = await pool.query(
-            'INSERT INTO users (uid, email, username, password, full_name, bio, profile_pic_url, followers, following, posts, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
-            [uid, email, username, password, fullName, bio, profilePicURL, followers, following, posts, createdAtDate]
+            'INSERT INTO userProfile (uid, email, username, password, full_name, created_at) VALUES ($1, $2, $3, $4, $5, $6 )',
+            [uid, email, username, password, fullName,createdAtDate]
         );
 
         // Log successful signup
@@ -87,7 +87,7 @@ app.post('/api/signup', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const result = await pool.query('SELECT * FROM userProfile WHERE email = $1', [email]);
         if (result.rows.length === 0) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }

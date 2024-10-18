@@ -30,3 +30,8 @@ dist-ssr
 package-lock.json
 .env
 .firebase
+.firebaserc
+firebase.json
+firebase.indexes.json
+firebase.rules
+storage.json

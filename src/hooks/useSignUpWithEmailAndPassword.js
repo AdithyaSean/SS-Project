@@ -55,7 +55,12 @@ const useSignUpWithEmailAndPassword = () => {
                 email: inputs.email,
                 username: inputs.username,
                 fullName: inputs.fullName,
-                password: newUser.user.uid + Date.now(),
+                bio: "",
+                profilePicURL: "",
+                followers: [],
+                following: [],
+                posts: [],
+                createdAt: Date.now(),
             });
 
             showToast("Success", "User created successfully", "success");

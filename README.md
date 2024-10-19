@@ -1,4 +1,4 @@
-# Fullstack Instagram Clone
+# Fullstack Social Media App
 
 This is a fullstack Instagram clone built with React, Firebase, and Chakra UI. The application includes features such as user authentication, post creation, image upload, and user profiles.
 

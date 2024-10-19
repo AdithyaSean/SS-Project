@@ -26,3 +26,13 @@ This is a fullstack Instagram clone built with React, Firebase, and Chakra UI. T
 
 - Node.js
 - Firebase account
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/AdithyaSean/SS-Project.git
+   ```
+2. Install dependencies:
+   ```
+   npm install

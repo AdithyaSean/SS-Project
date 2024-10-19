@@ -26,7 +26,3 @@ This is a fullstack Instagram clone built with React, Firebase, and Chakra UI. T
 
 - Node.js
 - Firebase account
-
-# [Tutorial](https://youtu.be/bQtAg7AFFrY)
-
-![Screenshot of App](https://i.ibb.co/PjkYLCk/Group-34.png)

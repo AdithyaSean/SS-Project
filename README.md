@@ -39,4 +39,4 @@ This is a fullstack Instagram clone built with React, Firebase, and Chakra UI. T
 3. Create a .env file in the root directory and add your Firebase and Postgresql configurations
 4. Start the development server:
     ```
-    npm start
+    npm run dev
